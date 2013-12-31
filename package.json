@@ -15,7 +15,7 @@
         "url": "git://github.com/swayf/mongoose-path-tree.git"
     },
     "main": "index.js",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "engine": "node >= 0.4.0",
     "dependencies": {
         "mongoose": "3.x.x"
