@@ -90,19 +90,23 @@ adam.getChildren(true, function(err, users) {
 
 ### getChildrenTree
 
-Signature:
-   
+Signature as method:
+
     getChildrenTree([args], cb);
 
-return a recursive tree of subchildren.
+Signature as static:
+
+    getChildrenTree([rootDoc], [args], cb);
+
+return a recursive tree of sub-children.
 
 args is an object you can defined with theses properties :
 
     filters: mongoose query filter, optional, default null
       example: filters: {owner:myId}
 
-    fields: mongoose fields, optional, default null (all columns)
-      example: columns: {"_id name owner"}
+    fields: mongoose fields, optional, default null (all fields)
+      example: fields: "_id name owner"
 
     options: mongoose query option, optional, default null
       example: options:{{sort:'-name'}}
@@ -115,43 +119,43 @@ args is an object you can defined with theses properties :
       example: recursive:false
 
     allowEmptyChildren: boolean, default true
-      if true, every childs not having subchilds will have childs attribute (empty array)
-      if false, every childs not having subchilds will not have childs attribute
+      if true, every child not having children will have 'children' attribute (empty array)
+      if false, every child not having children will not have 'children' attribute
 
     Example :
 
-    ```javascript
-    var args = {
-      filters: {owner:myId},
-      columns: {"_id name owner"},
-      minLevel:2,
-      recursive:true,
-      emptyChilds:false
-    }
+```javascript
+var args = {
+  filters: {owner:myId},
+  fields: "_id name owner",
+  minLevel:2,
+  recursive:true,
+  allowEmptyChildren:false
+}
 
-    getChildren(args,myCallback);
-    ```
+getChildrenTree(args,myCallback);
+```
 
 Based on the above hierarchy:
 
 ```javascript
-adam.getChildren([function](err, users) {
+adam.getChildrenTree( function(err, users) {
 
     /* if you dump users, you will have something like this :
     {
       "_id" : ObjectId("50136e40c78c4b9403000001"),
       "name" : "Adam",
       "path" : "50136e40c78c4b9403000001"
-      "childs" : [{
+      "children" : [{
           "_id" : ObjectId("50136e40c78c4b9403000002"),
           "name" : "Bob",
           "parent" : ObjectId("50136e40c78c4b9403000001"),
-          "path" : "50136e40c78c4b9403000001.50136e40c78c4b9403000002"
-          "childs" : [{
+          "path" : "50136e40c78c4b9403000001#50136e40c78c4b9403000002"
+          "children" : [{
               "_id" : ObjectId("50136e40c78c4b9403000003"),
               "name" : "Carol",
               "parent" : ObjectId("50136e40c78c4b9403000002"),
-              "path" : "50136e40c78c4b9403000001.50136e40c78c4b9403000002.50136e40c78c4b9403000003"
+              "path" : "50136e40c78c4b9403000001#50136e40c78c4b9403000002#50136e40c78c4b9403000003"
           }]
       }]
     }

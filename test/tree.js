@@ -14,7 +14,7 @@ describe('tree tests', function () {
     var UserSchema = new Schema({
         name: String
     });
-    UserSchema.plugin(tree);
+    UserSchema.plugin(tree, {pathSeparator: '.'});
     var User = mongoose.model('User', UserSchema);
 
     // Set up the fixture
@@ -23,12 +23,13 @@ describe('tree tests', function () {
             should.not.exist(err);
 
             var adam = new User({ 'name': 'Adam' });
+            var eden = new User({ 'name': 'Eden' });
             var bob = new User({ 'name': 'Bob', 'parent': adam });
             var carol = new User({ 'name': 'Carol', 'parent': adam });
             var dann = new User({ 'name': 'Dann', 'parent': carol });
             var emily = new User({ 'name': 'Emily', 'parent': dann });
 
-            async.forEachSeries([adam, bob, carol, dann, emily], function (doc, cb) {
+            async.forEachSeries([adam, bob, carol, dann, emily, eden], function (doc, cb) {
                 doc.save(cb);
             }, done);
         });
@@ -50,7 +51,7 @@ describe('tree tests', function () {
                 names['Dann'].parent.toString().should.equal(names['Carol']._id.toString());
                 names['Emily'].parent.toString().should.equal(names['Dann']._id.toString());
 
-                var expectedPath = [names['Adam']._id, names['Carol']._id, names['Dann']._id].join('#');
+                var expectedPath = [names['Adam']._id, names['Carol']._id, names['Dann']._id].join('.');
                 names['Dann'].path.should.equal(expectedPath);
 
                 done();
@@ -66,7 +67,7 @@ describe('tree tests', function () {
 
                     User.find(['name'], function (err, users) {
                         should.not.exist(err);
-                        users.length.should.equal(4);
+                        users.length.should.equal(5);
                         _.pluck(users, 'name').should.not.include('Emily');
                         done();
                     });
@@ -83,7 +84,7 @@ describe('tree tests', function () {
                     User.find(['name'], function (err, users) {
                         should.not.exist(err);
 
-                        users.length.should.equal(2);
+                        users.length.should.equal(3);
                         _.pluck(users, 'name').should.include('Adam').and.include('Bob');
                         done();
                     });
@@ -106,7 +107,7 @@ describe('tree tests', function () {
                     return;
                 }
                 should.exist(ids[user.parent]);
-                user.path.should.equal(ids[user.parent].path + "#" + user._id);
+                user.path.should.equal(ids[user.parent].path + "." + user._id);
             });
 
             done();
@@ -190,4 +191,28 @@ describe('tree tests', function () {
         });
     });
 
+    describe('get children tree', function () {
+
+        it("should return complete children tree", function (done) {
+            User.getChildrenTree(function (err, childrenTree) {
+                should.not.exist(err);
+                childrenTree.length.should.equal(2);
+                childrenTree[0].children[1].children[0].children[0].name.should.equal('Emily');
+                childrenTree[0].children[1].children[0].children.length.should.equal(1);
+                done();
+            });
+        });
+
+        it("should return adam's children tree", function (done) {
+            User.findOne({ 'name': 'Adam' }, function (err, adam) {
+                adam.getChildrenTree(function (err, childrenTree) {
+                    should.not.exist(err);
+                    childrenTree.length.should.equal(2);
+                    childrenTree[1].children[0].children[0].name.should.equal('Emily');
+                    childrenTree[1].children[0].children.length.should.equal(1);
+                    done();
+                });
+            });
+        });
+    });
 });
