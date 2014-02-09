@@ -3,7 +3,7 @@ var assert = require('assert'),
     tree = require('../lib/tree'),
     async = require('async'),
     should = require('should'),
-    _ = require('underscore');
+    _ = require('lodash');
 
 var Schema = mongoose.Schema;
 
