@@ -73,8 +73,9 @@ The path is used for recursive methods and is kept up to date by the plugin if t
 
 Signature:
 
-    getChildren([recursive], cb);
+    getChildren([args], [recursive], cb);
 
+args are additional filters if needed.
 if recursive is supplied and true, subchildren are returned
 
 Based on the above hierarchy:
@@ -116,7 +117,7 @@ args is an object you can defined with theses properties :
       example: minLevel:2
 
     recursive: boolean, default true
-      make the search recursive or only fetch childs for the specified level
+      make the search recursive or only fetch children for the specified level
       example: recursive:false
 
     allowEmptyChildren: boolean, default true
@@ -170,7 +171,7 @@ adam.getChildrenTree( function(err, users) {
 
 Signature:
 
-    getAncestors(cb);
+    getAncestors([args], cb);
 
 Based on the above hierarchy:
 

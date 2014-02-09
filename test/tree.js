@@ -3,7 +3,7 @@ var assert = require('assert'),
     tree = require('../lib/tree'),
     async = require('async'),
     should = require('should'),
-    _ = require('underscore');
+    _ = require('lodash');
 
 var Schema = mongoose.Schema;
 
@@ -138,6 +138,19 @@ describe('tree tests', function () {
     });
 
     describe('get children', function () {
+        it('should return immediate children with filters', function (done) {
+            User.findOne({ 'name': 'Adam' }, function (err, adam) {
+                should.not.exist(err);
+
+                adam.getChildren({ name: 'Bob' }, function (err, users) {
+                    should.not.exist(err);
+
+                    users.length.should.equal(1);
+                    _.pluck(users, 'name').should.include('Bob');
+                    done();
+                });
+            });
+        });
         it('should return immediate children', function (done) {
             User.findOne({ 'name': 'Adam' }, function (err, adam) {
                 should.not.exist(err);
