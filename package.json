@@ -1,44 +1,45 @@
 {
-    "author": "Brian Kirchoff <briankircho@gmail.com>",
-    "contributors": [
-        "Lourenzo Ferreira <lourenzo@gmail.com> (http://lourenzo.blog.br)",
-        "Franck Tab <franck.tab@gmail.com>",
-        "Tomáš Holas <tomas.holas@gmail.com>",
-        "Oleg Butovich <obutovich@gmail.com>",
-        "Jake Dempsey <angelo0000@gmail.com>",
-        "Alban Escalier (DaWyz)"
-    ],
-    "name": "mongoose-path-tree",
-    "description": "Maintaied version of materialized path hierarchy for mongoose with reparent option",
-    "homepage": "https://github.com/swayf/mongoose-path-tree",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/swayf/mongoose-path-tree.git"
-    },
-    "main": "index.js",
-    "version": "1.1.1",
-    "engine": "node >= 0.4.0",
-    "dependencies": {
-        "mongoose": "3.x.x"
-    },
-    "devDependencies": {
-        "async": "0.x.x",
-        "should": "1.x.x",
-        "lodash": "2.x.x",
-        "mocha": "1.x.x"
-    },
-    "directories": {
-        "test": "test"
-    },
-    "scripts": {
-        "test": "./node_modules/.bin/mocha"
-    },
-    "keywords": [
-        "mongoose",
-        "materialized",
-        "path",
-        "tree",
-        "mongodb"
-    ],
-    "license": "BSD"
+  "author": "Brian Kirchoff <briankircho@gmail.com>",
+  "contributors": [
+    "Lourenzo Ferreira <lourenzo@gmail.com> (http://lourenzo.blog.br)",
+    "Franck Tab <franck.tab@gmail.com>",
+    "Tomáš Holas <tomas.holas@gmail.com>",
+    "Oleg Butovich <obutovich@gmail.com>",
+    "Jake Dempsey <angelo0000@gmail.com>",
+    "Alban Escalier (DaWyz)"
+  ],
+  "name": "mongoose-path-tree",
+  "description": "Maintaied version of materialized path hierarchy for mongoose with reparent option",
+  "homepage": "https://github.com/swayf/mongoose-path-tree",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/swayf/mongoose-path-tree.git"
+  },
+  "main": "index.js",
+  "version": "1.2.1",
+  "engine": "node >= 0.4.0",
+  "dependencies": {
+    "mongoose": "3.x.x",
+    "stream-worker": "0.x.x"
+  },
+  "devDependencies": {
+    "async": "0.x.x",
+    "should": "1.x.x",
+    "lodash": "2.x.x",
+    "mocha": "1.x.x"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha"
+  },
+  "keywords": [
+    "mongoose",
+    "materialized",
+    "path",
+    "tree",
+    "mongodb"
+  ],
+  "license": "BSD"
 }
