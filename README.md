@@ -14,8 +14,9 @@ Install via NPM
 
 ```javascript
 Model.plugin(tree, {
-  pathSeparator : '#' // Default path separator
+  pathSeparator : '#'    // Default path separator
   onDelete :  'REPARENT' // Can be set to 'DELETE' or 'REPARENT'. Default: 'REPARENT'
+  numWorkers: 5          // Number of stream workers
 })
 ```
 
@@ -73,7 +74,7 @@ The path is used for recursive methods and is kept up to date by the plugin if t
 
 Signature:
 
-    getChildren([args], [recursive], cb);
+    getChildren([filters], [fields], [options], [recursive], cb);
 
 args are additional filters if needed.
 if recursive is supplied and true, subchildren are returned
@@ -171,7 +172,7 @@ adam.getChildrenTree( function(err, users) {
 
 Signature:
 
-    getAncestors([args], cb);
+    getAncestors([filters], [fields], [options], cb);
 
 Based on the above hierarchy:
 
