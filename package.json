@@ -20,7 +20,8 @@
   "engine": "node >= 0.4.0",
   "dependencies": {
     "mongoose": "3.x.x",
-    "stream-worker": "0.x.x"
+    "stream-worker": "0.x.x",
+    "shortid": "2.0.0"
   },
   "devDependencies": {
     "async": "0.x.x",
