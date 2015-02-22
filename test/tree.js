@@ -45,343 +45,368 @@ describe('tree tests', function () {
         });
     });
 
+    describe('depth', function(){
+       it('should handle more nodes with shortId', function(done){
+           this.timeout(5000000);
+           User.remove({}, function(){
+               var users = [];
+               _.times(75, function(x){
+                   var parent = _.last(users);
+                   var user = new User({name: x });
+                   if(parent){
+                       user.parent = parent;
+                   }
+                   users.push(user);
+               });
+
+               Async.forEachSeries(users, function (doc, cb) {
+                   doc.save(cb);
+               }, function(){
+                   User.count(function(err, c){
+                       c.should.equal(75);
+                       done();
+                   });
+               });
+           });
+       });
+    });
 
     describe('adding documents', function () {
 
-        it('should set parent id and path', function (done) {
+           it('should set parent id and path', function (done) {
 
-            User.find({}, function (err, users) {
+               User.find({}, function (err, users) {
 
-                should.not.exist(err);
+                   should.not.exist(err);
 
-                var names = {};
-                users.forEach(function (user) {
+                   var names = {};
+                   users.forEach(function (user) {
 
-                    names[user.name] = user;
-                });
+                       names[user.name] = user;
+                   });
 
-                should.not.exist(names['Adam'].parent);
-                names['Bob'].parent.toString().should.equal(names['Adam']._id.toString());
-                names['Carol'].parent.toString().should.equal(names['Adam']._id.toString());
-                names['Dann'].parent.toString().should.equal(names['Carol']._id.toString());
-                names['Emily'].parent.toString().should.equal(names['Dann']._id.toString());
+                   should.not.exist(names['Adam'].parent);
+                   names['Bob'].parent.toString().should.equal(names['Adam']._id.toString());
+                   names['Carol'].parent.toString().should.equal(names['Adam']._id.toString());
+                   names['Dann'].parent.toString().should.equal(names['Carol']._id.toString());
+                   names['Emily'].parent.toString().should.equal(names['Dann']._id.toString());
 
-                var expectedPath = [names['Adam']._id, names['Carol']._id, names['Dann']._id].join('.');
-                names['Dann'].path.should.equal(expectedPath);
+                   var expectedPath = [names['Adam']._id, names['Carol']._id, names['Dann']._id].join('.');
+                   names['Dann'].path.should.equal(expectedPath);
 
-                done();
-            });
-        });
-    });
+                   done();
+               });
+           });
+       });
 
 
-    describe('removing document', function () {
+       describe('removing document', function () {
 
-        it('should remove leaf nodes', function (done) {
+           it('should remove leaf nodes', function (done) {
 
-            User.findOne({ name: 'Emily' }, function (err, emily) {
+               User.findOne({ name: 'Emily' }, function (err, emily) {
 
-                emily.remove(function (err) {
-                    should.not.exist(err);
+                   emily.remove(function (err) {
+                       should.not.exist(err);
 
-                    User.find(function (err, users) {
+                       User.find(function (err, users) {
 
-                        should.not.exist(err);
-                        users.length.should.equal(5);
-                        _.pluck(users, 'name').should.not.include('Emily');
-                        done();
-                    });
-                });
-            });
-        });
+                           should.not.exist(err);
+                           users.length.should.equal(5);
+                           _.pluck(users, 'name').should.not.include('Emily');
+                           done();
+                       });
+                   });
+               });
+           });
 
-        it('should remove all children', function (done) {
+           it('should remove all children', function (done) {
 
-            User.findOne({ name: 'Carol' }, function (err, user) {
+               User.findOne({ name: 'Carol' }, function (err, user) {
 
-                should.not.exist(err);
+                   should.not.exist(err);
 
-                user.remove(function (err) {
+                   user.remove(function (err) {
 
-                    should.not.exist(err);
+                       should.not.exist(err);
 
-                    User.find(function (err, users) {
+                       User.find(function (err, users) {
 
-                        should.not.exist(err);
+                           should.not.exist(err);
 
-                        users.length.should.equal(3);
-                        _.pluck(users, 'name').should.include('Adam').and.include('Bob');
-                        done();
-                    });
-                });
-            });
-        });
-    });
+                           users.length.should.equal(3);
+                           _.pluck(users, 'name').should.include('Adam').and.include('Bob');
+                           done();
+                       });
+                   });
+               });
+           });
+       });
 
 
-    function checkPaths(done) {
-        User.find({}, function (err, users) {
+       function checkPaths(done) {
+           User.find({}, function (err, users) {
 
-            should.not.exist(err);
+               should.not.exist(err);
 
-            var ids = {};
-            users.forEach(function (user) {
+               var ids = {};
+               users.forEach(function (user) {
 
-                ids[user._id] = user;
-            });
+                   ids[user._id] = user;
+               });
 
-            users.forEach(function (user) {
+               users.forEach(function (user) {
 
-                if (!user.parent) {
-                    return;
-                }
-                should.exist(ids[user.parent]);
-                user.path.should.equal(ids[user.parent].path + "." + user._id);
-            });
+                   if (!user.parent) {
+                       return;
+                   }
+                   should.exist(ids[user.parent]);
+                   user.path.should.equal(ids[user.parent].path + "." + user._id);
+               });
 
-            done();
-        });
-    }
+               done();
+           });
+       }
 
 
-    describe('moving documents', function () {
+       describe('moving documents', function () {
 
-        it('should change children paths', function (done) {
+           it('should change children paths', function (done) {
 
-            User.find({}, function (err, users) {
-                should.not.exist(err);
+               User.find({}, function (err, users) {
+                   should.not.exist(err);
 
-                var names = {};
-                users.forEach(function (user) {
+                   var names = {};
+                   users.forEach(function (user) {
 
-                    names[user.name] = user;
-                });
+                       names[user.name] = user;
+                   });
 
-                var carol = names['Carol'];
-                var bob = names['Bob'];
+                   var carol = names['Carol'];
+                   var bob = names['Bob'];
 
-                carol.parent = bob;
-                carol.save(function (err) {
+                   carol.parent = bob;
+                   carol.save(function (err) {
 
-                    should.not.exist(err);
-                    checkPaths(done);
-                });
-            });
-        });
-    });
+                       should.not.exist(err);
+                       checkPaths(done);
+                   });
+               });
+           });
+       });
 
 
-    describe('get children', function () {
+       describe('get children', function () {
 
-        it('should return immediate children with filters', function (done) {
+           it('should return immediate children with filters', function (done) {
 
-            User.findOne({name: 'Adam'}, function (err, adam) {
+               User.findOne({name: 'Adam'}, function (err, adam) {
 
-                should.not.exist(err);
-                adam.getChildren({name: 'Bob'}, function (err, users) {
+                   should.not.exist(err);
+                   adam.getChildren({name: 'Bob'}, function (err, users) {
 
-                    should.not.exist(err);
-                    users.length.should.equal(1);
-                    _.pluck(users, 'name').should.include('Bob');
-                    done();
-                });
-            });
-        });
+                       should.not.exist(err);
+                       users.length.should.equal(1);
+                       _.pluck(users, 'name').should.include('Bob');
+                       done();
+                   });
+               });
+           });
 
-        it('should return immediate children', function (done) {
+           it('should return immediate children', function (done) {
 
-            User.findOne({name: 'Adam'}, function (err, adam) {
+               User.findOne({name: 'Adam'}, function (err, adam) {
 
-                should.not.exist(err);
+                   should.not.exist(err);
 
-                adam.getChildren(function (err, users) {
-                    should.not.exist(err);
+                   adam.getChildren(function (err, users) {
+                       should.not.exist(err);
 
-                    users.length.should.equal(2);
-                    _.pluck(users, 'name').should.include('Bob').and.include('Carol');
-                    done();
-                });
-            });
-        });
+                       users.length.should.equal(2);
+                       _.pluck(users, 'name').should.include('Bob').and.include('Carol');
+                       done();
+                   });
+               });
+           });
 
-        it('should return recursive children', function (done) {
+           it('should return recursive children', function (done) {
 
-            User.findOne({ 'name': 'Carol' }, function (err, carol) {
+               User.findOne({ 'name': 'Carol' }, function (err, carol) {
 
-                should.not.exist(err);
+                   should.not.exist(err);
 
-                carol.getChildren(true, function (err, users) {
+                   carol.getChildren(true, function (err, users) {
 
-                    should.not.exist(err);
+                       should.not.exist(err);
 
-                    users.length.should.equal(2);
-                    _.pluck(users, 'name').should.include('Dann').and.include('Emily');
-                    done();
-                });
-            });
-        });
+                       users.length.should.equal(2);
+                       _.pluck(users, 'name').should.include('Dann').and.include('Emily');
+                       done();
+                   });
+               });
+           });
 
-        it('should return children with only name and _id fields', function (done) {
+           it('should return children with only name and _id fields', function (done) {
 
-            User.findOne({ 'name': 'Carol' }, function (err, carol) {
+               User.findOne({ 'name': 'Carol' }, function (err, carol) {
 
-                should.not.exist(err);
+                   should.not.exist(err);
 
-                carol.getChildren({}, 'name', true, function (err, users) {
+                   carol.getChildren({}, 'name', true, function (err, users) {
 
-                    should.not.exist(err);
+                       should.not.exist(err);
 
-                    users.length.should.equal(2);
-                    users[0].should.not.have.property('parent');
-                    _.pluck(users, 'name').should.include('Dann').and.include('Emily');
-                    done();
-                });
-            });
-        });
+                       users.length.should.equal(2);
+                       users[0].should.not.have.property('parent');
+                       _.pluck(users, 'name').should.include('Dann').and.include('Emily');
+                       done();
+                   });
+               });
+           });
 
-        it('should return children sorted on name', function (done) {
+           it('should return children sorted on name', function (done) {
 
-            User.findOne({ 'name': 'Carol' }, function (err, carol) {
+               User.findOne({ 'name': 'Carol' }, function (err, carol) {
 
-                should.not.exist(err);
+                   should.not.exist(err);
 
-                carol.getChildren({}, null, {sort: {name: -1}}, true, function (err, users) {
+                   carol.getChildren({}, null, {sort: {name: -1}}, true, function (err, users) {
 
-                    should.not.exist(err);
+                       should.not.exist(err);
 
-                    users.length.should.equal(2);
-                    users[0].name.should.equal('Emily');
-                    _.pluck(users, 'name').should.include('Dann').and.include('Emily');
-                    done();
-                });
-            });
-        });
-    });
+                       users.length.should.equal(2);
+                       users[0].name.should.equal('Emily');
+                       _.pluck(users, 'name').should.include('Dann').and.include('Emily');
+                       done();
+                   });
+               });
+           });
+       });
 
 
-    describe('level virtual', function () {
+       describe('level virtual', function () {
 
-        it('should equal the number of ancestors', function (done) {
+           it('should equal the number of ancestors', function (done) {
 
-            User.findOne({ 'name': 'Dann' }, function (err, dann) {
+               User.findOne({ 'name': 'Dann' }, function (err, dann) {
 
-                should.not.exist(err);
+                   should.not.exist(err);
 
-                dann.level.should.equal(3);
-                done();
-            });
-        });
-    });
+                   dann.level.should.equal(3);
+                   done();
+               });
+           });
+       });
 
 
-    describe('get ancestors', function () {
+       describe('get ancestors', function () {
 
-        it('should return ancestors', function (done) {
+           it('should return ancestors', function (done) {
 
-            User.findOne({ 'name': 'Dann' }, function (err, dann) {
+               User.findOne({ 'name': 'Dann' }, function (err, dann) {
 
-                dann.getAncestors(function (err, ancestors) {
-                    should.not.exist(err);
+                   dann.getAncestors(function (err, ancestors) {
+                       should.not.exist(err);
 
-                    ancestors.length.should.equal(2);
-                    _.pluck(ancestors, 'name').should.include('Carol').and.include('Adam');
-                    done();
-                });
-            });
-        });
+                       ancestors.length.should.equal(2);
+                       _.pluck(ancestors, 'name').should.include('Carol').and.include('Adam');
+                       done();
+                   });
+               });
+           });
 
 
-        it('should return ancestors with only name and _id fields', function (done) {
+           it('should return ancestors with only name and _id fields', function (done) {
 
-            User.findOne({ 'name': 'Dann' }, function (err, dann) {
+               User.findOne({ 'name': 'Dann' }, function (err, dann) {
 
-                dann.getAncestors({}, 'name', function (err, ancestors) {
-                    should.not.exist(err);
+                   dann.getAncestors({}, 'name', function (err, ancestors) {
+                       should.not.exist(err);
 
-                    ancestors.length.should.equal(2);
-                    ancestors[0].should.not.have.property('parent');
-                    ancestors[0].should.have.property('name');
-                    _.pluck(ancestors, 'name').should.include('Carol').and.include('Adam');
-                    done();
-                });
-            });
-        });
+                       ancestors.length.should.equal(2);
+                       ancestors[0].should.not.have.property('parent');
+                       ancestors[0].should.have.property('name');
+                       _.pluck(ancestors, 'name').should.include('Carol').and.include('Adam');
+                       done();
+                   });
+               });
+           });
 
 
-        it('should return ancestors sorted on name and without wrappers', function (done) {
+           it('should return ancestors sorted on name and without wrappers', function (done) {
 
-            User.findOne({ 'name': 'Dann' }, function (err, dann) {
+               User.findOne({ 'name': 'Dann' }, function (err, dann) {
 
-                dann.getAncestors({}, null, {sort: {name: -1}, lean: 1}, function (err, ancestors) {
-                    should.not.exist(err);
+                   dann.getAncestors({}, null, {sort: {name: -1}, lean: 1}, function (err, ancestors) {
+                       should.not.exist(err);
 
-                    ancestors.length.should.equal(2);
-                    ancestors[0].name.should.equal('Carol');
-                    should.not.exist(ancestors[0].getAncestors);
-                    _.pluck(ancestors, 'name').should.include('Carol').and.include('Adam');
-                    done();
-                });
-            });
-        });
-    });
+                       ancestors.length.should.equal(2);
+                       ancestors[0].name.should.equal('Carol');
+                       should.not.exist(ancestors[0].getAncestors);
+                       _.pluck(ancestors, 'name').should.include('Carol').and.include('Adam');
+                       done();
+                   });
+               });
+           });
+       });
 
 
-    describe('get children tree', function () {
+       describe('get children tree', function () {
 
-        it("should return complete children tree", function (done) {
+           it("should return complete children tree", function (done) {
 
-            User.getChildrenTree(function (err, childrenTree) {
+               User.getChildrenTree(function (err, childrenTree) {
 
-                should.not.exist(err);
-                childrenTree.length.should.equal(2);
+                   should.not.exist(err);
+                   childrenTree.length.should.equal(2);
 
-                var adamTree = _.find(childrenTree, function(x){ return x.name == 'Adam'});
-                var edenTree = _.find(childrenTree, function(x){ return x.name == 'Eden'});
+                   var adamTree = _.find(childrenTree, function(x){ return x.name == 'Adam'});
+                   var edenTree = _.find(childrenTree, function(x){ return x.name == 'Eden'});
 
-                var bobTree = _.find(adamTree.children, function(x){ return x.name == 'Bob'});
+                   var bobTree = _.find(adamTree.children, function(x){ return x.name == 'Bob'});
 
-                var carolTree = _.find(adamTree.children, function(x){ return x.name == 'Carol'});
-                var danTree = _.find(carolTree.children, function(x){ return x.name == 'Dann'});
-                var emilyTree = _.find(danTree.children, function(x){ return x.name == 'Emily'});
+                   var carolTree = _.find(adamTree.children, function(x){ return x.name == 'Carol'});
+                   var danTree = _.find(carolTree.children, function(x){ return x.name == 'Dann'});
+                   var emilyTree = _.find(danTree.children, function(x){ return x.name == 'Emily'});
 
 
-                adamTree.children.length.should.equal(2);
-                edenTree.children.length.should.equal(0);
+                   adamTree.children.length.should.equal(2);
+                   edenTree.children.length.should.equal(0);
 
-                bobTree.children.length.should.equal(0);
+                   bobTree.children.length.should.equal(0);
 
-                carolTree.children.length.should.equal(1);
+                   carolTree.children.length.should.equal(1);
 
-                danTree.children.length.should.equal(1);
-                danTree.children[0].name.should.equal('Emily');
+                   danTree.children.length.should.equal(1);
+                   danTree.children[0].name.should.equal('Emily');
 
-                emilyTree.children.length.should.equal(0);
-                done();
-            });
-        });
+                   emilyTree.children.length.should.equal(0);
+                   done();
+               });
+           });
 
-        it("should return adam's children tree", function (done) {
+           it("should return adam's children tree", function (done) {
 
-            User.findOne({ 'name': 'Adam' }, function (err, adam) {
+               User.findOne({ 'name': 'Adam' }, function (err, adam) {
 
-                adam.getChildrenTree(function (err, childrenTree) {
+                   adam.getChildrenTree(function (err, childrenTree) {
 
-                    should.not.exist(err);
+                       should.not.exist(err);
 
-                    var bobTree = _.find(childrenTree, function(x){ return x.name == 'Bob'});
+                       var bobTree = _.find(childrenTree, function(x){ return x.name == 'Bob'});
 
-                    var carolTree = _.find(childrenTree, function(x){ return x.name == 'Carol'});
-                    var danTree = _.find(carolTree.children, function(x){ return x.name == 'Dann'});
-                    var emilyTree = _.find(danTree.children, function(x){ return x.name == 'Emily'});
+                       var carolTree = _.find(childrenTree, function(x){ return x.name == 'Carol'});
+                       var danTree = _.find(carolTree.children, function(x){ return x.name == 'Dann'});
+                       var emilyTree = _.find(danTree.children, function(x){ return x.name == 'Emily'});
 
-                    bobTree.children.length.should.equal(0);
-                    carolTree.children.length.should.equal(1);
-                    danTree.children.length.should.equal(1);
-                    danTree.children[0].name.should.equal('Emily');
+                       bobTree.children.length.should.equal(0);
+                       carolTree.children.length.should.equal(1);
+                       danTree.children.length.should.equal(1);
+                       danTree.children[0].name.should.equal('Emily');
 
-                    done();
-                });
-            });
-        });
+                       done();
+                   });
+               });
+           });
     });
 });
