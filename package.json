@@ -19,7 +19,7 @@
   "version": "1.2.1",
   "engine": "node >= 0.4.0",
   "dependencies": {
-    "mongoose": "3.x.x",
+    "mongoose": "4.4.16",
     "stream-worker": "0.x.x",
     "shortid": "2.0.0"
   },
