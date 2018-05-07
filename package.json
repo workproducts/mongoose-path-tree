@@ -17,9 +17,9 @@
   },
   "main": "index.js",
   "version": "1.2.1",
-  "engine": "node >= 0.4.0",
+  "engine": "node >= 4.9.1",
   "dependencies": {
-    "mongoose": "4.4.16",
+    "mongoose": "^4",
     "stream-worker": "0.x.x",
     "shortid": "2.0.0"
   },
