@@ -10,10 +10,10 @@
   ],
   "name": "mongoose-path-tree",
   "description": "Maintaied version of materialized path hierarchy for mongoose with reparent option",
-  "homepage": "https://github.com/swayf/mongoose-path-tree",
+  "homepage": "https://github.com/workproducts/mongoose-path-tree",
   "repository": {
     "type": "git",
-    "url": "git://github.com/swayf/mongoose-path-tree.git"
+    "url": "git://github.com/workproducts/mongoose-path-tree.git"
   },
   "main": "index.js",
   "version": "1.2.1",
