@@ -3,6 +3,7 @@
     "name": "Brian Kirchoff",
     "email": "briankircho@gmail.com"
   },
+  "version": "2.0.0",
   "bugs": {
     "url": "https://github.com/swayf/mongoose-path-tree/issues"
   },
