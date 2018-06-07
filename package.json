@@ -1,40 +1,55 @@
 {
-  "author": "Brian Kirchoff <briankircho@gmail.com>",
+  "author": {
+    "name": "Brian Kirchoff",
+    "email": "briankircho@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/swayf/mongoose-path-tree/issues"
+  },
   "contributors": [
-    "Lourenzo Ferreira <lourenzo@gmail.com> (http://lourenzo.blog.br)",
-    "Franck Tab <franck.tab@gmail.com>",
-    "Tomáš Holas <tomas.holas@gmail.com>",
-    "Oleg Butovich <obutovich@gmail.com>",
-    "Jake Dempsey <angelo0000@gmail.com>",
-    "Alban Escalier (DaWyz)"
+    {
+      "name": "Lourenzo Ferreira",
+      "email": "lourenzo@gmail.com",
+      "url": "http://lourenzo.blog.br"
+    },
+    {
+      "name": "Franck Tab",
+      "email": "franck.tab@gmail.com"
+    },
+    {
+      "name": "Tomáš Holas",
+      "email": "tomas.holas@gmail.com"
+    },
+    {
+      "name": "Oleg Butovich",
+      "email": "obutovich@gmail.com"
+    },
+    {
+      "name": "Jake Dempsey",
+      "email": "angelo0000@gmail.com"
+    },
+    {
+      "name": "Alban Escalier",
+      "url": "DaWyz"
+    }
   ],
-  "name": "mongoose-path-tree",
-  "description": "Maintaied version of materialized path hierarchy for mongoose with reparent option",
-  "homepage": "https://github.com/workproducts/mongoose-path-tree",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/workproducts/mongoose-path-tree.git"
-  },
-  "main": "index.js",
-  "version": "1.2.1",
-  "engine": "node >= 4.9.1",
   "dependencies": {
-    "mongoose": "^4",
-    "stream-worker": "0.x.x",
-    "shortid": "2.0.0"
+    "mongoose": "4.x.x",
+    "shortid": "2.0.0",
+    "stream-worker": "0.x.x"
   },
+  "description": "Maintaied version of materialized path hierarchy for mongoose with reparent option",
   "devDependencies": {
     "async": "0.x.x",
-    "should": "1.x.x",
     "lodash": "2.x.x",
-    "mocha": "1.x.x"
+    "mocha": "1.x.x",
+    "should": "1.x.x"
   },
   "directories": {
     "test": "test"
   },
-  "scripts": {
-    "test": "./node_modules/.bin/mocha"
-  },
+  "engine": "node >= 0.4.0",
+  "homepage": "https://github.com/swayf/mongoose-path-tree",
   "keywords": [
     "mongoose",
     "materialized",
@@ -42,5 +57,14 @@
     "tree",
     "mongodb"
   ],
-  "license": "BSD"
+  "license": "BSD",
+  "main": "index.js",
+  "name": "mongoose-path-tree",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/swayf/mongoose-path-tree.git"
+  },
+  "scripts": {
+    "test": "mocha"
+  }
 }
